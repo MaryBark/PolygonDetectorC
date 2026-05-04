@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  detector-server:
+    build: .
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./models:/app/models:ro
+      - ./test_images:/app/test_images:ro
+    restart: unless-stopped
+
+  detector-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - detector-server
+    environment:
+      - SERVER_HOST=detector-server
+      - SERVER_PORT=9090
